@@ -39,7 +39,7 @@ jobs:
       uses: 'google-github-actions/get-gke-credentials@v2'
       with:
         cluster_name: 'autopilot-cluster-1'
-        location: 'us-central1-a'
+        location: 'us-central1'
 
     # deploy to GKE
     # load balancer port is 80
