@@ -26,14 +26,14 @@ jobs:
         service_account_key: ${{ secrets.SERVICE_ACCOUNT }}
         export_default_credentials: true
 
-    - name: Build the container image and push Artifact Registry
-      env:
-        PROJECT_ID: ${{ secrets.PROJECT_ID }}
+    # - name: Build the container image and push Artifact Registry
+    #   env:
+    #     PROJECT_ID: ${{ secrets.PROJECT_ID }}
     
-      run: |
-        gcloud auth configure-docker us-central1-docker.pkg.dev
-        docker build -t us-central1-docker.pkg.dev/${PROJECT_ID}/mlops/fastapi:latest .
-        docker push us-central1-docker.pkg.dev/${PROJECT_ID}/mlops/fastapi:latest
+    #   run: |
+    #     gcloud auth configure-docker us-central1-docker.pkg.dev
+    #     docker build -t us-central1-docker.pkg.dev/${PROJECT_ID}/mlops/fastapi:latest .
+    #     docker push us-central1-docker.pkg.dev/${PROJECT_ID}/mlops/fastapi:latest
         
     - id: 'get-credentials'
       uses: 'google-github-actions/get-gke-credentials@v2'
