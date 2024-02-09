@@ -26,50 +26,22 @@ jobs:
         service_account_key: ${{ secrets.SERVICE_ACCOUNT }}
         export_default_credentials: true
 
-    # - name: Build the container image and push Artifact Registry
-    #   env:
-    #     PROJECT_ID: ${{ secrets.PROJECT_ID }}
+    - name: Build the container image and push Artifact Registry
+      env:
+        PROJECT_ID: ${{ secrets.PROJECT_ID }}
     
-    #   run: |
-    #     gcloud auth configure-docker us-central1-docker.pkg.dev
-    #     docker build -t us-central1-docker.pkg.dev/${PROJECT_ID}/mlops/fastapi:latest .
-    #     docker push us-central1-docker.pkg.dev/${PROJECT_ID}/mlops/fastapi:latest
-        
-    - id: 'get-credentials'
-      uses: 'google-github-actions/get-gke-credentials@v2'
-      with:
-        cluster_name: 'autopilot-cluster-1'
-        location: 'us-central1'
-
-    # deploy to GKE
-    # load balancer port is 80
-    # target port is 8000
-    - name: Deploy to GKE
       run: |
-        kubectl set image deployment/fastapi fastapi=us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/mlops/fastapi:latest
-        kubectl rollout status deployment/fastapi
+        gcloud auth configure-docker us-central1-docker.pkg.dev
+        docker build -t us-central1-docker.pkg.dev/${PROJECT_ID}/mlops/fastapi:latest .
+        docker push us-central1-docker.pkg.dev/${PROJECT_ID}/mlops/fastapi:latest
 
-
-
-
-    # - name: Deploy to Cloud Run
-    #   run: |
-    #     gcloud run deploy fastapi \
-    #     --image=us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/mlops/fastapi:latest \
-    #     --allow-unauthenticated \
-    #     --port=8080 \
-    #     --service-account=${{ secrets.SERVICE_ACCOUNT }} \
-    #     --cpu-boost \
-    #     --region=us-central1 \
-    #     --project=${{ secrets.PROJECT_ID }}
-
-    # - name: Deploy to Cloud Run
-    #   uses: google-github-actions/deploy-cloudrun@v1
-    #   with:
-    #     service: fastapi
-    #     image: us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/mlops/fastapi:latest
-    #     region: us-central1
-    #     allow-unauthenticated: true
-    #     service_account_key: ${{ secrets.SERVICE_ACCOUNT }}
-    #     project_id: ${{ secrets.PROJECT_ID }}
-    #     credentials_json: ${{ secrets.CREDENTIALS_JSON }} 
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy fastapi \
+        --image=us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/mlops/fastapi:latest \
+        --allow-unauthenticated \
+        --port=8000 \
+        --service-account=${{ secrets.SERVICE_ACCOUNT }} \
+        --cpu-boost \
+        --region=us-central1 \
+        --project=${{ secrets.PROJECT_ID }}
